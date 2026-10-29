@@ -10,37 +10,46 @@
 
     var SERVICIU = "http://127.0.0.1:18080/capture";
     var trimise = {};
+    var ultimulText = "";
+    var caseta = null;
 
     // ce arata ca un stream
     var ARATA_STREAM = /\.m3u8|\.mpd|\/hls\/|\/live\/|playlist|manifest|\.ts(\?|$)/i;
 
-    // afiseaza in colt ce s-a prins (util la test, vizibil pe TV)
+    /* Afiseaza in colt. La injectie (document-start) body NU exista inca,
+     * deci amanam pana la DOMContentLoaded — altfel markerul e mut. */
     function arata(text) {
+        ultimulText = text;
         try {
-            var d = document.getElementById("hls-note");
-            if (!d) {
-                d = document.createElement("div");
-                d.id = "hls-note";
-                d.style.cssText = "position:fixed;left:8px;bottom:8px;z-index:2147483647;" +
-                    "background:rgba(0,0,0,.85);color:#0f0;font:13px monospace;" +
-                    "padding:8px 12px;border-radius:6px;max-width:92vw;word-break:break-all;" +
-                    "pointer-events:none";
-                (document.body || document.documentElement).appendChild(d);
+            if (!document.body) {
+                document.addEventListener("DOMContentLoaded", function () { arata(ultimulText); });
+                return;
             }
-            d.textContent = text;
-        } catch (e) { /* fara DOM inca */ }
+            if (!caseta || !caseta.parentNode) {
+                caseta = document.getElementById("hls-note");
+                if (!caseta) {
+                    caseta = document.createElement("div");
+                    caseta.id = "hls-note";
+                    caseta.style.cssText = "position:fixed;left:8px;bottom:8px;z-index:2147483647;" +
+                        "background:rgba(0,0,0,.88);color:#0f0;font:13px monospace;" +
+                        "padding:8px 12px;border-radius:6px;max-width:92vw;word-break:break-all;" +
+                        "pointer-events:none";
+                }
+                document.body.appendChild(caseta);
+            }
+            caseta.textContent = ultimulText;
+        } catch (e) { /* fara DOM */ }
     }
 
     function semnaleaza(url) {
         if (!url || typeof url !== "string") return;
-        // nu ne intercepta propriul POST (altfel recursie infinita)
-        if (url.indexOf("127.0.0.1:18080") !== -1) return;
+        if (url.indexOf("127.0.0.1:18080") !== -1) return;   // propriul POST
         if (!ARATA_STREAM.test(url)) return;
         if (trimise[url]) return;
         trimise[url] = 1;
 
         var complet = url;
-        try { complet = new URL(url, location.href).href; } catch (e) { /* lasa cum e */ }
+        try { complet = new URL(url, location.href).href; } catch (e) { }
 
         try {
             var x = new XMLHttpRequest();
@@ -48,10 +57,10 @@
                 "?u=" + encodeURIComponent(complet) +
                 "&p=" + encodeURIComponent(location.href), true);
             x.send();
-        } catch (e) { /* serviciul poate fi oprit */ }
+        } catch (e) { }
 
         console.log("[hls] capturat: " + complet);
-        arata("capturat\n" + complet);
+        arata("CAPTURAT\n" + complet);
     }
 
     /* ---- XMLHttpRequest ---- */
@@ -76,7 +85,7 @@
         }
     } catch (e) {}
 
-    /* ---- src pe <video>/<audio>/<source> ---- */
+    /* ---- src pe <video>/<audio> ---- */
     try {
         var d = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, "src");
         if (d && d.set) {
@@ -91,7 +100,7 @@
         }
     } catch (e) {}
 
-    /* ---- <source src> introdus prin setAttribute ---- */
+    /* ---- src prin setAttribute (iframe / source / video) ---- */
     try {
         var setAttrVechi = Element.prototype.setAttribute;
         Element.prototype.setAttribute = function (nume, valoare) {
@@ -102,5 +111,7 @@
         };
     } catch (e) {}
 
+    /* ---- marker: ne spune daca hook-ul a ajuns in pagina ---- */
     console.log("[hls] hook activ pe " + location.href);
+    arata("hook activ\n" + location.href);
 })();
