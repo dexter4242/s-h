@@ -1,10 +1,10 @@
 {
-  "name": "@tvron/captura",
+  "name": "@dexter4242/stream-helper",
   "version": "1.0.0",
-  "appName": "TVRON Captura",
+  "appName": "Stream Helper",
   "packageType": "mods",
   "websiteURL": "https://www.tvonline123.eu/tvlive/",
   "main": "hook.js",
   "evaluateScriptOnDocumentStart": true,
-  "description": "Prinde URL-ul streamului din pagina si il trimite aplicatiei TVRON (127.0.0.1:18080)"
+  "description": "Captures stream URLs from the page"
 }
