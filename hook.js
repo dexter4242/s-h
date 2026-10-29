@@ -1,9 +1,9 @@
 /*
- * TVRON Captura — mod TizenBrew
+ * Stream helper — mod TizenBrew
  *
- * Rulează în pagina reală, la domeniul real (injecție CDP, înainte de încărcare).
- * Prinde URL-ul streamului din traficul paginii și îl trimite serviciului local
- * al aplicației TVRON, care îl folosește ca suprascriere pentru canal.
+ * Ruleaza in pagina reala, la domeniul real (injectie CDP, inainte de incarcare).
+ * Prinde URL-ul streamului din traficul paginii si il trimite serviciului local
+ * de pe 127.0.0.1:18080.
  */
 (function () {
     "use strict";
@@ -11,16 +11,16 @@
     var SERVICIU = "http://127.0.0.1:18080/capture";
     var trimise = {};
 
-    // ce arată ca un stream
+    // ce arata ca un stream
     var ARATA_STREAM = /\.m3u8|\.mpd|\/hls\/|\/live\/|playlist|manifest|\.ts(\?|$)/i;
 
     // afiseaza in colt ce s-a prins (util la test, vizibil pe TV)
     function arata(text) {
         try {
-            var d = document.getElementById("tvron-captura");
+            var d = document.getElementById("hls-note");
             if (!d) {
                 d = document.createElement("div");
-                d.id = "tvron-captura";
+                d.id = "hls-note";
                 d.style.cssText = "position:fixed;left:8px;bottom:8px;z-index:2147483647;" +
                     "background:rgba(0,0,0,.85);color:#0f0;font:13px monospace;" +
                     "padding:8px 12px;border-radius:6px;max-width:92vw;word-break:break-all;" +
@@ -40,7 +40,7 @@
         trimise[url] = 1;
 
         var complet = url;
-        try { complet = new URL(url, location.href).href; } catch (e) { /* lasă cum e */ }
+        try { complet = new URL(url, location.href).href; } catch (e) { /* lasa cum e */ }
 
         try {
             var x = new XMLHttpRequest();
@@ -50,8 +50,8 @@
             x.send();
         } catch (e) { /* serviciul poate fi oprit */ }
 
-        console.log("[tvron] capturat: " + complet);
-        arata("TVRON: trimis\n" + complet);
+        console.log("[hls] capturat: " + complet);
+        arata("capturat\n" + complet);
     }
 
     /* ---- XMLHttpRequest ---- */
@@ -102,5 +102,5 @@
         };
     } catch (e) {}
 
-    console.log("[tvron] hook activ pe " + location.href);
+    console.log("[hls] hook activ pe " + location.href);
 })();
