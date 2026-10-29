@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "appName": "Stream Helper",
   "packageType": "mods",
-  "websiteURL": "https://www.tvonline123.eu/tvlive/?url=antena-1",
+  "websiteURL": "https://cool-tv.net/ch/an1.htm",
   "main": "hook.js",
   "evaluateScriptOnDocumentStart": false,
   "description": "Captures stream URLs from the page"
