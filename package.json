@@ -5,6 +5,6 @@
   "packageType": "mods",
   "websiteURL": "https://www.tvonline123.eu/tvlive/",
   "main": "hook.js",
-  "evaluateScriptOnDocumentStart": true,
+  "evaluateScriptOnDocumentStart": false,
   "description": "Captures stream URLs from the page"
 }
