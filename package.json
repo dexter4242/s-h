@@ -1,0 +1,10 @@
+{
+  "name": "@tvron/captura",
+  "version": "1.0.0",
+  "appName": "TVRON Captura",
+  "packageType": "mods",
+  "websiteURL": "https://www.tvonline123.eu/tvlive/",
+  "main": "hook.js",
+  "evaluateScriptOnDocumentStart": true,
+  "description": "Prinde URL-ul streamului din pagina si il trimite aplicatiei TVRON (127.0.0.1:18080)"
+}
